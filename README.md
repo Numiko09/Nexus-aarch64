@@ -139,7 +139,7 @@ The system will automatically find the optimal difficulty for your hardware
 Only override if you're fine-tuning performance
 # Updating
 
-##To update to a newer version:
+## To update to a newer version:
 
 Remove the existing binary:
 ```bash
