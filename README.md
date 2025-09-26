@@ -1,13 +1,16 @@
 # Nexus-aarch64
 
-This repository provides a precompiled `nexus-network` binary for ARM64 Android devices, cross-compiled from the [nexus-cli](https://github.com/nexus-xyz/nexus-cli) project (version 0.10.13). It is designed to run in Termux on Android 10+ with aarch64 architecture.
-
-## License
-Apache-2.0/MIT (same as nexus-cli).
+This repository provides a precompiled `nexus-network` binary for ARM64 Android devices, cross-compiled from the [nexus-cli](https://github.com/nexus-xyz/nexus-cli) project (version 0.10.13). It is designed to run in Termux on Android 11+ with aarch64 architecture.
 
 ## Installation in Termux
 
 ### Quick Install
+
+Install wget and curl utils:
+```bash
+pkg install wget && pkg install curl -y
+```
+
 To download and install the `nexus-network` binary in Termux, run the following command:
 
 ```bash
@@ -22,11 +25,9 @@ Test the binary with nexus-network --help.
 
 ### Manual Install
 
-Clone or download the repository:
+Download the installation script:
 ```bash
-pkg install git -y
-git clone https://github.com/Numiko09/Nexus-aarch64.git
-cd Nexus-aarch64
+wget https://raw.githubusercontent.com/Numiko09/Nexus-aarch64/main/install-nexus-network-termux.sh
 ```
 
 Run the installation script:
@@ -38,39 +39,41 @@ source ~/.bashrc
 
 ## Requirements
 
-Termux installed on an Android device (ARM64, Android 10+).
+Termux installed on an Android device (ARM64, Android 11+).
+
 Note that Termux from Google Play are no longer supported by developers. 
-Use version https://f-droid.org/en/packages/com.termux/
+
+Use version from https://f-droid.org/en/packages/com.termux/
+
 Internet connection for downloading the binary. 
-wget (installed automatically by the script).
 
 ## Proving
 
 To start with an existing node ID, run:
 ```bash
-nexus-cli start --node-id <your-node-id>
+nexus-network start --node-id <your-node-id>
 ```
 
 Alternatively, you can register your wallet address and create a node ID with the CLI, or at app.nexus.xyz.
 ```bash
-nexus-cli register-user --wallet-address <your-wallet-address>
-nexus-cli register-node --node-id <your-cli-node-id>
-nexus-cli start
+nexus-network register-user --wallet-address <your-wallet-address>
+nexus-network register-node --node-id <your-cli-node-id>
+nexus-network start
 ```
 
 To run the CLI noninteractively, you can also opt to start it in headless mode.
 ```bash
-nexus-cli start --headless
+nexus-network start --headless
 ```
 
 ### Quick Reference
 The register-user and register-node commands will save your credentials to ~/.nexus/config.json. To clear credentials, run:
 ```bash
-nexus-cli logout
+nexus-network logout
 ```
 For troubleshooting or to see available command-line options, run:
 ```bash
-nexus-cli --help
+nexus-network --help
 ```
 ## Adaptive Task Difficulty
 The Nexus CLI features an adaptive difficulty system that automatically adjusts task difficulty based on your node's performance. This ensures optimal resource utilization while preventing system overload.
@@ -96,23 +99,23 @@ Maximum reward optimization
 
 ## Lower difficulty for resource-constrained systems
 ```bash
-nexus-cli start --max-difficulty small
-nexus-cli start --max-difficulty small_medium
+nexus-network start --max-difficulty small
+nexus-network start --max-difficulty small_medium
 ```
 
 ## Higher difficulty for powerful hardware
 ```bash
-nexus-cli start --max-difficulty medium
-nexus-cli start --max-difficulty large
-nexus-cli start --max-difficulty extra_large
-nexus-cli start --max-difficulty extra_large_2
+nexus-network start --max-difficulty medium
+nexus-network start --max-difficulty large
+nexus-network start --max-difficulty extra_large
+nexus-network start --max-difficulty extra_large_2
 ```
 
 ## Case-insensitive (all equivalent)
 ```bash
-nexus-cli start --max-difficulty MEDIUM
-nexus-cli start --max-difficulty medium
-nexus-cli start --max-difficulty Medium
+nexus-network start --max-difficulty MEDIUM
+nexus-network start --max-difficulty medium
+nexus-network start --max-difficulty Medium
 ```
 
 ## Tip: Its strongly reccomended to not go further medium difficulty on mobile device due to heavy overheating.
@@ -122,34 +125,21 @@ nexus-cli start --max-difficulty Medium
 
 Try a lower difficulty.
 ```bash
-nexus-cli start --max-difficulty small_medium
+nexus-network start --max-difficulty small_medium
 ```
 
 ## Want more challenging tasks:
 
 Request a harder difficulty. It will still take time to build up reputation to get the requested difficulty.
 ```bash
-nexus-cli start --max-difficulty medium
+nexus-network start --max-difficulty medium
 ```
 
 ## Unsure about system capabilities:
 
-Use the default adaptive system (no --max-difficulty needed)
-The system will automatically find the optimal difficulty for your hardware
-Only override if you're fine-tuning performance
-# Updating
-
-## To update to a newer version:
-
-Remove the existing binary:
-```bash
-rm /data/data/com.termux/files/usr/bin/nexus-network
-```
-
-Re-run the installation script:
-```bash
-./install-nexus-network-termux.sh
-```
+Use the default adaptive system (no --max-difficulty needed).
+The system will automatically find the optimal difficulty for your hardware.
+Only override if you're fine-tuning performance.
 
 ## Building from Source
 
@@ -170,5 +160,5 @@ For issues, open a ticket at https://github.com/Numiko09/Nexus-aarch64/issues.
 # Contributing
 Contributions are welcome! Fork the repository, make changes, and submit a pull request.
 
-# Note
-A public release (v0.10.13-aarch64) will be available soon at https://github.com/Numiko09/Nexus-aarch64/releases. Check for updates.
+## License
+Apache-2.0/MIT (same as nexus-cli).
