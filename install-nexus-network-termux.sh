@@ -19,13 +19,14 @@ DOWNLOAD_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRA
 EXPECTED_SHA256="4f2ef1f69624e072b35966f8e69d720d3f508d12060e0106c622a3cc31fdca8a"
 INSTALL_DIR="/data/data/com.termux/files/usr/bin"
 BINARY_PATH="${INSTALL_DIR}/${BINARY_NAME}"
-TEMP_BINARY="/tmp/${BINARY_NAME}"
+TEMP_BINARY="$HOME/nexus-network.tmp"  # Changed to $HOME to avoid /tmp issues
 LOG_FILE="$HOME/nexus-network-install.log"
 
 # Print welcome message and log
 echo "Installing nexus-network for Termux (aarch64)..." | tee "$LOG_FILE"
 echo "Binary will be downloaded from: $DOWNLOAD_URL" | tee -a "$LOG_FILE"
 echo "Installation directory: $INSTALL_DIR" | tee -a "$LOG_FILE"
+echo "Temporary file: $TEMP_BINARY" | tee -a "$LOG_FILE"
 echo "Log file: $LOG_FILE" | tee -a "$LOG_FILE"
 
 # Step 1: Verify Termux environment
@@ -35,7 +36,24 @@ if [ ! -d "/data/data/com.termux" ]; then
     exit 1
 fi
 
-# Step 2: Install curl if not present
+# Step 2: Check write permissions for temporary file
+echo "Checking write permissions for $TEMP_BINARY..." | tee -a "$LOG_FILE"
+touch "$TEMP_BINARY" 2>/dev/null
+if [ $? -ne 0 ]; then
+    echo "Error: Cannot write to $TEMP_BINARY! Check permissions or disk space in $HOME." | tee -a "$LOG_FILE"
+    exit 1
+fi
+rm -f "$TEMP_BINARY"
+
+# Step 3: Check disk space
+echo "Checking available disk space..." | tee -a "$LOG_FILE"
+AVAILABLE_SPACE=$(df -k "$HOME" | tail -1 | awk '{print $4}')
+if [ "$AVAILABLE_SPACE" -lt 10240 ]; then  # Less than 10MB
+    echo "Error: Insufficient disk space in $HOME! Need at least 10MB, available: ${AVAILABLE_SPACE}KB." | tee -a "$LOG_FILE"
+    exit 1
+fi
+
+# Step 4: Install curl if not present
 echo "Checking for curl..." | tee -a "$LOG_FILE"
 if ! command -v curl >/dev/null 2>&1; then
     echo "Installing curl..." | tee -a "$LOG_FILE"
@@ -48,36 +66,37 @@ else
     echo "curl is already installed." | tee -a "$LOG_FILE"
 fi
 
-# Step 3: Check if binary already exists
+# Step 5: Check if binary already exists
 echo "Checking if $BINARY_NAME is already installed..." | tee -a "$LOG_FILE"
 if [ -f "$BINARY_PATH" ]; then
     echo "Binary already exists at $BINARY_PATH. Removing it..." | tee -a "$LOG_FILE"
     rm "$BINARY_PATH"
 fi
 
-# Step 4: Download the binary
+# Step 6: Download the binary
 echo "Downloading nexus-network from $DOWNLOAD_URL..." | tee -a "$LOG_FILE"
-curl -sSL -o "$TEMP_BINARY" "$DOWNLOAD_URL"
+curl -sSL -o "$TEMP_BINARY" "$DOWNLOAD_URL" 2>>"$LOG_FILE"
 if [ $? -ne 0 ]; then
     echo "Error: Failed to download binary from $DOWNLOAD_URL!" | tee -a "$LOG_FILE"
-    echo "Please check if the file exists in the repository at $BINARY_NAME." | tee -a "$LOG_FILE"
+    echo "Check network connection or if the file exists at $DOWNLOAD_URL." | tee -a "$LOG_FILE"
+    cat "$LOG_FILE" | grep curl >>"$LOG_FILE"  # Log curl-specific errors
     exit 1
 fi
 echo "Download completed." | tee -a "$LOG_FILE"
 
-# Step 5: Verify SHA256 checksum
+# Step 7: Verify SHA256 checksum
 echo "Verifying SHA256 checksum..." | tee -a "$LOG_FILE"
 COMPUTED_SHA256=$(sha256sum "$TEMP_BINARY" | cut -d' ' -f1)
 if [ "$COMPUTED_SHA256" != "$EXPECTED_SHA256" ]; then
     echo "Error: SHA256 checksum mismatch!" | tee -a "$LOG_FILE"
     echo "Expected: $EXPECTED_SHA256" | tee -a "$LOG_FILE"
     echo "Got: $COMPUTED_SHA256" | tee -a "$LOG_FILE"
-    rm "$TEMP_BINARY"
+    rm -f "$TEMP_BINARY"
     exit 1
 fi
 echo "SHA256 checksum verified." | tee -a "$LOG_FILE"
 
-# Step 6: Install the binary
+# Step 8: Install the binary
 echo "Installing to $BINARY_PATH..." | tee -a "$LOG_FILE"
 chmod +x "$TEMP_BINARY"
 mv "$TEMP_BINARY" "$BINARY_PATH"
@@ -87,7 +106,7 @@ if [ $? -ne 0 ]; then
 fi
 echo "Binary installed successfully." | tee -a "$LOG_FILE"
 
-# Step 7: Verify the binary is executable
+# Step 9: Verify the binary is executable
 echo "Verifying binary..." | tee -a "$LOG_FILE"
 if command -v "$BINARY_NAME" >/dev/null 2>&1; then
     echo "Testing binary: $BINARY_NAME --help" | tee -a "$LOG_FILE"
@@ -103,7 +122,7 @@ else
     exit 1
 fi
 
-# Step 8: Final instructions
+# Step 10: Final instructions
 echo "Installation complete!" | tee -a "$LOG_FILE"
 echo "nexus-network is installed at: $BINARY_PATH" | tee -a "$LOG_FILE"
 echo "Run the following to use it:" | tee -a "$LOG_FILE"
