@@ -49,11 +49,11 @@ else
 fi
 
 # Step 3: Check if binary already exists
-echo "Checking if $BINARY_NAME is already installed..." | tee -a "$LOG_FILE"
-if [ -f "$BINARY_PATH" ]; then
-    echo "Binary already exists at $BINARY_PATH. Removing it..." | tee -a "$LOG_FILE"
-    rm "$BINARY_PATH"
-fi
+#echo "Checking if $BINARY_NAME is already installed..." | tee -a "$LOG_FILE"
+#if [ -f "$BINARY_PATH" ]; then
+#    echo "Binary already exists at $BINARY_PATH. Removing it..." | tee -a "$LOG_FILE"
+#    rm "$BINARY_PATH"
+#fi
 
 # Step 4: Download the binary
 echo "Downloading nexus-network from $DOWNLOAD_URL..." | tee -a "$LOG_FILE"
