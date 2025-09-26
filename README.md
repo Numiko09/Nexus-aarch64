@@ -14,7 +14,7 @@ pkg install wget && pkg install curl -y
 To download and install the `nexus-network` binary in Termux, run the following command:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Numiko09/Nexus-aarch64/main/install-nexus-network-termux.sh | bash
+curl -sSL -L raw.githubusercontent.com/Numiko09/Nexus-aarch64/main/nexus-termux.sh | bash
 ```
 This will:
 
@@ -27,13 +27,13 @@ Test the binary with nexus-network --help.
 
 Download the installation script:
 ```bash
-wget https://raw.githubusercontent.com/Numiko09/Nexus-aarch64/main/install-nexus-network-termux.sh
+wget https://raw.githubusercontent.com/Numiko09/Nexus-aarch64/main/nexus-termux.sh
 ```
 
 Run the installation script:
 ```bash
-chmod +x install-nexus-network-termux.sh
-./install-nexus-network-termux.sh
+chmod +x nexus-termux.sh
+./nexus-termux.sh
 source ~/.bashrc
 ```
 
