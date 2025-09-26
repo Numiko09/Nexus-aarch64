@@ -1,10 +1,14 @@
 # Nexus-aarch64
 
-This repository provides a precompiled `nexus-network` binary for ARM64 Android devices, cross-compiled from the [nexus-cli](https://github.com/nexus-xyz/nexus-cli) project (version 0.10.13). It is designed to run in Termux on Android 11+ with aarch64 architecture.
+This repository provides a precompiled `nexus-network` binary for ARM64 Android devices, cross-compiled from the [nexus-cli](https://github.com/nexus-xyz/nexus-cli) project (version 0.10.13). It is designed to run in Termux on Android 10+ with aarch64 architecture.
+
+## Gratitude
+
+Great thanks to Vau for his invaluable help for making this release happens and for making it looks as it should be. Appreciate mate!
 
 ## Requirements
 
-Termux installed on an Android device (ARM64, Android 11+).
+Termux installed on an Android device (ARM64, Android 10+).
 
 Note that Termux from Google Play are no longer supported by developers. 
 
@@ -14,6 +18,9 @@ Internet connection for downloading the binary.
 
 `curl` (installed automatically by the script).
 
+# Warning
+
+It`s a custom binary for Android devices. It is strongly NOT reccomended to run Cli node on your mobile device due to overheating and probably damage/cause fire. By using this build, you act at your own risk and take full responsibility for any problems and consequences.
 ## Installation in Termux
 
 ### Quick Install
@@ -31,6 +38,11 @@ Install it to /data/data/com.termux/files/usr/bin/nexus-network.
 Test the binary with nexus-network --help.
 
 ### Manual Install
+
+Download `curl` if not installed:
+```bash
+pkg install curl -y
+```
 
 Download the installation script:
 ```bash
@@ -115,7 +127,7 @@ nexus-network start --max-difficulty medium
 nexus-network start --max-difficulty Medium
 ```
 
-## Tip: Its strongly reccomended to not go further medium difficulty on mobile device due to heavy overheating.
+## Tip: Its strongly reccomended to NOT go further medium difficulty on mobile device due to heavy overheating.
 
 # Troubleshooting Difficulty Issues
 ## Tasks taking too long:
