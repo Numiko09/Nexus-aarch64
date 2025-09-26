@@ -1,6 +1,6 @@
 # Nexus-aarch64
 
-This repository provides a precompiled `nexus-network` binary for ARM64 Android devices, cross-compiled from the [nexus-cli](https://github.com/nexus-xyz/nexus-cli) project (version 0.10.13). It is designed to run in Termux on Android 10+ with aarch64 architecture.
+This repository provides a precompiled `nexus-network` binary for ARM64 Android devices, cross-compiled from the [nexus-cli](https://github.com/nexus-xyz/nexus-cli) project (version 0.10.13). It is designed to run in Termux on Android 11+ with aarch64 architecture.
 
 ## Gratitude
 
@@ -8,7 +8,7 @@ Great thanks to Vau for his invaluable help for making this release happens and 
 
 ## Requirements
 
-Termux installed on an Android device (ARM64, Android 10+).
+Termux installed on an Android device (ARM64, Android 11+).
 
 Note that Termux from Google Play are no longer supported by developers. 
 
