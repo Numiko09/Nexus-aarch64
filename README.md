@@ -2,14 +2,21 @@
 
 This repository provides a precompiled `nexus-network` binary for ARM64 Android devices, cross-compiled from the [nexus-cli](https://github.com/nexus-xyz/nexus-cli) project (version 0.10.13). It is designed to run in Termux on Android 11+ with aarch64 architecture.
 
+## Requirements
+
+Termux installed on an Android device (ARM64, Android 11+).
+
+Note that Termux from Google Play are no longer supported by developers. 
+
+Use version from https://f-droid.org/en/packages/com.termux/
+
+Internet connection for downloading the binary. 
+
+`curl` (installed automatically by the script).
+
 ## Installation in Termux
 
 ### Quick Install
-
-Install wget and curl utils:
-```bash
-pkg install wget && pkg install curl -y
-```
 
 To download and install the `nexus-network` binary in Termux, run the following command:
 
@@ -27,7 +34,7 @@ Test the binary with nexus-network --help.
 
 Download the installation script:
 ```bash
-wget https://raw.githubusercontent.com/Numiko09/Nexus-aarch64/main/nexus-termux.sh
+curl -L raw.githubusercontent.com/Numiko09/Nexus-aarch64/main/nexus-termux.sh
 ```
 
 Run the installation script:
@@ -36,16 +43,6 @@ chmod +x nexus-termux.sh
 ./nexus-termux.sh
 source ~/.bashrc
 ```
-
-## Requirements
-
-Termux installed on an Android device (ARM64, Android 11+).
-
-Note that Termux from Google Play are no longer supported by developers. 
-
-Use version from https://f-droid.org/en/packages/com.termux/
-
-Internet connection for downloading the binary. 
 
 ## Proving
 
