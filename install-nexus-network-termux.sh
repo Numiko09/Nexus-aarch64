@@ -2,7 +2,7 @@
 
 # Script to install nexus-network aarch64 binary in Termux
 # Repository: https://github.com/Numiko09/Nexus-aarch64
-# Binary: nexus-network from binaries/ directory in main branch
+# Binary: nexus-network from main branch root
 # Target: Android ARM64 (API level 30+)
 # Tested in Termux on Android 10+ with ARM64
 # License: Apache-2.0/MIT (same as nexus-cli)
@@ -15,7 +15,7 @@ REPO_OWNER="Numiko09"
 REPO_NAME="Nexus-aarch64"
 BRANCH="main"
 BINARY_NAME="nexus-network"
-DOWNLOAD_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/binaries/${BINARY_NAME}"
+DOWNLOAD_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRANCH}/${BINARY_NAME}"
 EXPECTED_SHA256="4f2ef1f69624e072b35966f8e69d720d3f508d12060e0106c622a3cc31fdca8a"
 INSTALL_DIR="/data/data/com.termux/files/usr/bin"
 BINARY_PATH="${INSTALL_DIR}/${BINARY_NAME}"
@@ -60,7 +60,7 @@ echo "Downloading nexus-network from $DOWNLOAD_URL..." | tee -a "$LOG_FILE"
 wget -O "$TEMP_BINARY" "$DOWNLOAD_URL"
 if [ $? -ne 0 ]; then
     echo "Error: Failed to download binary from $DOWNLOAD_URL!" | tee -a "$LOG_FILE"
-    echo "Please check if the file exists in the repository at binaries/$BINARY_NAME." | tee -a "$LOG_FILE"
+    echo "Please check if the file exists in the repository at $BINARY_NAME." | tee -a "$LOG_FILE"
     exit 1
 fi
 echo "Download completed." | tee -a "$LOG_FILE"
