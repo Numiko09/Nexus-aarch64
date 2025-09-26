@@ -19,7 +19,8 @@ DOWNLOAD_URL="https://raw.githubusercontent.com/${REPO_OWNER}/${REPO_NAME}/${BRA
 EXPECTED_SHA256="4f2ef1f69624e072b35966f8e69d720d3f508d12060e0106c622a3cc31fdca8a"
 INSTALL_DIR="/data/data/com.termux/files/usr/bin"
 BINARY_PATH="${INSTALL_DIR}/${BINARY_NAME}"
-TEMP_BINARY="$HOME/nexus-network.tmp"  # Changed to $HOME to avoid /tmp issues
+TEMP_DIR="$HOME/tmp"
+TEMP_BINARY="$TEMP_DIR/$BINARY_NAME"
 LOG_FILE="$HOME/nexus-network-install.log"
 
 # Print welcome message and log
@@ -36,11 +37,17 @@ if [ ! -d "/data/data/com.termux" ]; then
     exit 1
 fi
 
-# Step 2: Check write permissions for temporary file
+# Step 2: Create temporary directory and check write permissions
+echo "Creating temporary directory $TEMP_DIR if not exists..." | tee -a "$LOG_FILE"
+mkdir -p "$TEMP_DIR"
+if [ ! -d "$TEMP_DIR" ]; then
+    echo "Error: Failed to create $TEMP_DIR!" | tee -a "$LOG_FILE"
+    exit 1
+fi
 echo "Checking write permissions for $TEMP_BINARY..." | tee -a "$LOG_FILE"
-touch "$TEMP_BINARY" 2>/dev/null
+touch "$TEMP_BINARY" 2>>"$LOG_FILE"
 if [ $? -ne 0 ]; then
-    echo "Error: Cannot write to $TEMP_BINARY! Check permissions or disk space in $HOME." | tee -a "$LOG_FILE"
+    echo "Error: Cannot write to $TEMP_BINARY! Check permissions or disk space in $TEMP_DIR." | tee -a "$LOG_FILE"
     exit 1
 fi
 rm -f "$TEMP_BINARY"
@@ -48,8 +55,8 @@ rm -f "$TEMP_BINARY"
 # Step 3: Check disk space
 echo "Checking available disk space..." | tee -a "$LOG_FILE"
 AVAILABLE_SPACE=$(df -k "$HOME" | tail -1 | awk '{print $4}')
-if [ "$AVAILABLE_SPACE" -lt 10240 ]; then  # Less than 10MB
-    echo "Error: Insufficient disk space in $HOME! Need at least 10MB, available: ${AVAILABLE_SPACE}KB." | tee -a "$LOG_FILE"
+if [ "$AVAILABLE_SPACE" -lt 51200 ]; then  # Less than 50MB
+    echo "Error: Insufficient disk space in $HOME! Need at least 50MB, available: ${AVAILABLE_SPACE}KB." | tee -a "$LOG_FILE"
     exit 1
 fi
 
@@ -70,7 +77,11 @@ fi
 echo "Checking if $BINARY_NAME is already installed..." | tee -a "$LOG_FILE"
 if [ -f "$BINARY_PATH" ]; then
     echo "Binary already exists at $BINARY_PATH. Removing it..." | tee -a "$LOG_FILE"
-    rm "$BINARY_PATH"
+    rm "$BINARY_PATH" 2>>"$LOG_FILE"
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to remove existing binary at $BINARY_PATH!" | tee -a "$LOG_FILE"
+        exit 1
+    fi
 fi
 
 # Step 6: Download the binary
@@ -78,10 +89,11 @@ echo "Downloading nexus-network from $DOWNLOAD_URL..." | tee -a "$LOG_FILE"
 curl -sSL -o "$TEMP_BINARY" "$DOWNLOAD_URL" 2>>"$LOG_FILE"
 if [ $? -ne 0 ]; then
     echo "Error: Failed to download binary from $DOWNLOAD_URL!" | tee -a "$LOG_FILE"
-    echo "Check network connection or if the file exists at $DOWNLOAD_URL." | tee -a "$LOG_FILE"
-    cat "$LOG_FILE" | grep curl >>"$LOG_FILE"  # Log curl-specific errors
+    echo "Check network connection or if the file exists at $DOWNLOAD_URL. Curl errors logged above." | tee -a "$LOG_FILE"
     exit 1
 fi
+echo "Download completed. File details:" | tee -a "$LOG_FILE"
+ls -l "$TEMP_BINARY" >>"$LOG_FILE" 2>>"$LOG_FILE"
 echo "Download completed." | tee -a "$LOG_FILE"
 
 # Step 7: Verify SHA256 checksum
@@ -98,8 +110,8 @@ echo "SHA256 checksum verified." | tee -a "$LOG_FILE"
 
 # Step 8: Install the binary
 echo "Installing to $BINARY_PATH..." | tee -a "$LOG_FILE"
-chmod +x "$TEMP_BINARY"
-mv "$TEMP_BINARY" "$BINARY_PATH"
+chmod +x "$TEMP_BINARY" 2>>"$LOG_FILE"
+mv "$TEMP_BINARY" "$BINARY_PATH" 2>>"$LOG_FILE"
 if [ $? -ne 0 ]; then
     echo "Error: Failed to install binary! Check write permissions for $INSTALL_DIR." | tee -a "$LOG_FILE"
     exit 1
@@ -110,7 +122,7 @@ echo "Binary installed successfully." | tee -a "$LOG_FILE"
 echo "Verifying binary..." | tee -a "$LOG_FILE"
 if command -v "$BINARY_NAME" >/dev/null 2>&1; then
     echo "Testing binary: $BINARY_NAME --help" | tee -a "$LOG_FILE"
-    "$BINARY_PATH" --help
+    "$BINARY_PATH" --help 2>>"$LOG_FILE"
     if [ $? -eq 0 ]; then
         echo "Success: nexus-network installed and runs correctly!" | tee -a "$LOG_FILE"
     else
