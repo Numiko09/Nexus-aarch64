@@ -35,17 +35,17 @@ if [ ! -d "/data/data/com.termux" ]; then
     exit 1
 fi
 
-# Step 2: Install wget if not present
-echo "Checking for wget..." | tee -a "$LOG_FILE"
-if ! command -v wget >/dev/null 2>&1; then
-    echo "Installing wget..." | tee -a "$LOG_FILE"
-    pkg update -y && pkg install wget -y
+# Step 2: Install curl if not present
+echo "Checking for curl..." | tee -a "$LOG_FILE"
+if ! command -v curl >/dev/null 2>&1; then
+    echo "Installing curl..." | tee -a "$LOG_FILE"
+    pkg update -y && pkg install curl -y
     if [ $? -ne 0 ]; then
-        echo "Error: Failed to install wget!" | tee -a "$LOG_FILE"
+        echo "Error: Failed to install curl!" | tee -a "$LOG_FILE"
         exit 1
     fi
 else
-    echo "wget is already installed." | tee -a "$LOG_FILE"
+    echo "curl is already installed." | tee -a "$LOG_FILE"
 fi
 
 # Step 3: Check if binary already exists
@@ -57,7 +57,7 @@ fi
 
 # Step 4: Download the binary
 echo "Downloading nexus-network from $DOWNLOAD_URL..." | tee -a "$LOG_FILE"
-wget -O "$TEMP_BINARY" "$DOWNLOAD_URL"
+curl -sSL -o "$TEMP_BINARY" "$DOWNLOAD_URL"
 if [ $? -ne 0 ]; then
     echo "Error: Failed to download binary from $DOWNLOAD_URL!" | tee -a "$LOG_FILE"
     echo "Please check if the file exists in the repository at $BINARY_NAME." | tee -a "$LOG_FILE"
